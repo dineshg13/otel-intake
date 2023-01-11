@@ -1,0 +1,66 @@
+syntax = "proto3";
+
+package pb;
+
+option java_multiple_files = true;
+option java_package = "com.dd.agent.pb";
+option java_outer_classname = "APITraceProto";
+
+// Below this line the content is copied from:
+// - https://github.com/DataDog/datadog-agent/tree/master/pkg/trace/pb/span.proto
+// - https://github.com/DataDog/datadog-agent/tree/master/pkg/trace/pb/trace.proto
+// - https://github.com/DataDog/datadog-agent/tree/master/pkg/trace/pb/trace_payload.proto
+
+message APISpan {
+  string service = 1;
+  string name = 2;
+  string resource = 3;
+  uint64 traceID = 4;
+  uint64 spanID = 5;
+  uint64 parentID = 6;
+  int64 start = 7;
+  int64 duration = 8;
+  int32 error = 9;
+  map<string, string> meta = 10;
+  map<string, double> metrics = 11;
+  string type = 12;
+  map<string, bytes> meta_struct = 13;
+}
+
+message APITraceChunk {
+  int32 priority = 1;
+  string origin = 2;
+  repeated APISpan spans = 3;
+  map<string, string> tags = 4;
+  bool droppedTrace = 5;
+}
+
+message APITracerPayload {
+  string containerID = 1;
+  string languageName = 2;
+  string languageVersion = 3;
+  string tracerVersion = 4;
+  string runtimeID = 5;
+  repeated APITraceChunk chunks = 6;
+  map<string, string> tags = 7;
+  string env = 8;
+  string hostname = 9;
+  string appVersion = 10;
+}
+
+message APITrace {
+  uint64 traceID = 1;
+  repeated APISpan spans = 2;
+  int64 startTime = 6;
+  int64 endTime = 7;
+}
+
+message APITracePayload {
+  string hostName = 1;
+  string env = 2;
+  repeated APITrace traces = 3;
+  repeated APISpan transactions = 4;
+  repeated APITracerPayload tracerPayloads = 5;
+  map<string, string> tags = 6;
+  string agentVersion = 7;
+}
